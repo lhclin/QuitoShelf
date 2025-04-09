@@ -82,7 +82,7 @@ module side_clip_airvent_left()
     vent_size=2; // from shelf code
     clip_height=vent_size - tolerance;
     
-    shelf_distance=panel_thickness*2+2;
+    shelf_distance=panel_thickness*2+1.5;
     
     translate([-shelf_distance/2,0,0])
     {
