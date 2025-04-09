@@ -63,11 +63,42 @@ module left_side_clip(height=40)
     }
     } // translate to left side of Z plane
 }
-module side_clip(height=40)
+
+// connecting shelves side-by-side at the back
+module side_clip_back(height=40)
 {
     left_side_clip(height=height);
     mirror([1,0,0])
        left_side_clip(height=height);
+}
+
+// connecting shelves side-by-side using
+// the air vents
+module side_clip_airvent_left()
+{    
+    $fn=100;
+    
+    tolerance = 0.2;
+    vent_size=2; // from shelf code
+    clip_height=vent_size - tolerance;
+    
+    shelf_distance=panel_thickness*2+2;
+    
+    translate([-shelf_distance/2,0,0])
+    {
+    difference() {
+        cylinder(h=clip_height,r=vent_size,center=true);
+        translate([0,-vent_size,-clip_height/2])
+            cube([vent_size*2,vent_size*2,clip_height]);
+    }
+    rotate([0,90,0])
+    cylinder(h=shelf_distance/2,d=clip_height);
+    }
+}
+module side_clip_airvent()
+{
+    side_clip_airvent_left();
+    mirror([1,0,0]) side_clip_airvent_left();
 }
 
 module 4_stoppers()
@@ -82,8 +113,9 @@ module 4_stoppers()
         3mm_stopper();
 }
 
-side_clip(height=panel_height-2*panel_thickness-2);
-
+// side_clip_back(height=panel_height-2*panel_thickness-2);
 // universal_mount_screw(40); 
+// 4_stoppers();
+side_clip_airvent();
 
 
