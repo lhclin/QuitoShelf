@@ -1,6 +1,22 @@
 include <Common.scad>
 use <threads.scad>
 
+/* [Making] */
+making="Plate Stoppers"; // ["Plate Stoppers","Side Clip Back","Side Clips Air Vent","Mounting Screw 25mm","Mounting Screw 40mm"]
+
+/* [Hidden] */
+if (making=="Plate Stoppers") {
+    4_stoppers();
+} else if (making=="Side Clip Back") {
+    side_clip_back(height=panel_height-2*panel_thickness-2);
+} else if (making=="Side Clips Air Vent") {
+    4_side_clips();
+} else if (making=="Mounting Screw 25mm") {
+    universal_mount_screw(25);
+} else if (making=="Mounting Screw 40mm") {
+    universal_mount_screw(40);
+}
+
 // 3mm stopper (fake M3 screw)
 module 3mm_stopper(tolerance=0.15)
 {
@@ -101,6 +117,17 @@ module side_clip_airvent()
     mirror([1,0,0]) side_clip_airvent_left();
 }
 
+module 4_side_clips()
+{
+    side_clip_airvent();
+    translate([0,10,0])
+        side_clip_airvent();
+    translate([0,20,0])
+        side_clip_airvent();
+    translate([0,30,0])
+        side_clip_airvent();    
+}
+
 module 4_stoppers()
 {
     // for quick printing
@@ -113,9 +140,6 @@ module 4_stoppers()
         3mm_stopper();
 }
 
-// side_clip_back(height=panel_height-2*panel_thickness-2);
-// universal_mount_screw(40); 
-// 4_stoppers();
-side_clip_airvent();
+
 
 
