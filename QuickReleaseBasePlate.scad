@@ -5,6 +5,26 @@ include <Common.scad>
 
 use <KeystoneMount.scad>
 
+/* [Making] */
+making="Vented"; // ["Solid","Vented","Drawer","8 Keystones","Other"]
+// TODO: screw plate customizer
+
+/* [Hidden] */
+
+if (making=="Solid") {
+    quick_release_solid_plate();
+} else if (making=="Vented") {
+    quick_release_vented_plate();
+} else if (making=="Drawer") {
+    drawer_plate();
+} else if (making=="8 Keystones") {
+    8_keystone_plate();
+} else {
+    // Use code here for screw plate
+}
+
+
+
 // -----------
 // Solid Plate
 // -----------
@@ -299,10 +319,6 @@ module base_plate_air_vents(vented=3)
             venting_hole(vent_length,vent_radius);
 }
 
-// testing
-// drawer_plate();
-// 8_keystone_plate();
-// quick_release_vented_plate();
 
 
 
