@@ -5,29 +5,46 @@ include <Common.scad>
 use <KeystoneMount.scad>
 
 /* [Making] */
-Making="Vented"; // ["Solid","Vented","Drawer","8 Keystones","Other"]
-Height="Standard"; // ["Standard","Slim","150","180"]
-// TODO: screw plate customizer
+Making="Vented"; // ["Vented","Drawer","Keystones","Solid Full","Solid Half","Solid Quarter","Screw"]
+Height="40mm Slim"; // ["40mm Slim","50mm Standard","150mm","180mm","Custom"]
+CustomHeight=40;
+Keystones=8;
+
+/* [Screw Plate Parameters] */
+Diameter=4;
+X1=57.5; Y1=46.5;
+X2=157.5; Y2=46.5;
+X3=57.5; Y3=146.5;
+X4=157.5; Y4=146.5;
+Vented=0;
 
 /* [Hidden] */
+panel_height=(Height=="40mm Slim") ? 40 :
+             (Height=="50mm Standard") ? 50 :
+             (Height=="150mm") ? 150 :
+             (Height=="180mm") ? 180 : 
+             (Height=="Custom") ? CustomHeight : 0; 
 
-// panel_height=150;
-
-
-
-if (Making=="Solid") {
-    quick_release_solid_plate();
-} else if (Making=="Vented") {
+if (Making=="Vented") {
     quick_release_vented_plate();
 } else if (Making=="Drawer") {
     drawer_plate();
-} else if (Making=="8 Keystones") {
-    8_keystone_plate();
-} else {
-    // Use code here for screw plate
+} else if (Making=="Keystones") {
+    keystone_plate(Keystones);
+} else if (Making=="Solid Full") {
+    quick_release_solid_plate(plate_style="full");
+} else if (Making=="Solid Half") {
+    quick_release_solid_plate(plate_style="half");
+} else if (Making=="Solid Quarter") {
+    quick_release_solid_plate(plate_style="quarter");
+} else if (Making=="Screw") {
+    screw_plate(
+        sx1=X1,sy1=Y1,sd1=Diameter,
+        sx2=X2,sy2=Y2,sd2=Diameter,
+        sx3=X3,sy3=Y3,sd3=Diameter,
+        sx4=X4,sy4=Y4,sd4=Diameter,
+        vented=Vented);
 }
-
-
 
 // -----------
 // Solid Plate
@@ -53,11 +70,11 @@ module quick_release_solid_plate(
     // removal for non-full plates
     if (plate_style=="half") {
         translate([0,panel_length/2,0])
-        cube([shelf_width,panel_length/2,panel_height],center=false);
+        cube([shelf_width,panel_length/2,panel_thickness],center=false);
     }
     else if (plate_style=="quarter") {
         translate([0,panel_length/4,0])
-        cube([shelf_width,panel_length*3/4,panel_height],center=false);
+        cube([shelf_width,panel_length*3/4,panel_thickness],center=false);
     }
         
     // bevel the back bottom for easy insertion
@@ -173,8 +190,10 @@ module drawer_plate()
 // ---------------------
 // Keystone Mount Plates
 // ---------------------
-module 8_keystone_plate()
+module keystone_plate(keystones=8)
 {
+    stones=keystones < 1 ? 1 : keystones; // don't div by 0
+    
     quick_release_solid_plate(plate_style="quarter");
     
     ksw=16.6;
@@ -182,18 +201,18 @@ module 8_keystone_plate()
     ksz=(panel_height - 26) / 2; // 26 is approximate height of keystone
     
     margin=12; // we need some space on the left and right to access the stop holes
-    ks_space=(shelf_width-2*margin)/8;
+    ks_space=(shelf_width-2*margin)/stones;
     
     difference() {
         front_cover();
-        for (i=[0:7]) {
+        for (i=[0:stones-1]) {
             ksx=i*ks_space+margin+(ks_space-ksw)/2;
             
             translate([ksx,0,ksz])
                 hull()keystone_mount();
         }
     }
-    for (i=[0:7]) {
+    for (i=[0:stones-1]) {
             ksx=i*ks_space+margin+(ks_space-ksw)/2;
             
             translate([ksx,0,ksz])
