@@ -1,25 +1,21 @@
 include <Common.scad>
-use <QuickReleaseBasePlate.scad>
 
+Making="Shelf"; // ["Shelf","Top Cover","Short Top Cover"]
+Height="40mm Slim"; // ["40mm Slim","50mm Standard","150mm","180mm","Custom"]
+CustomHeight=40;
 
-making="shelf";
-// making="test";
-// making="top cover"; // full size cover
-// making="short top cover"; // short top cover. For cosmetic use
-// making="10inch1U"; // not finished
-
-if (making=="shelf")
+if (Making=="Shelf")
 {
     shelf(shelf_style="regular");
 }
-else if (making=="top cover")
+else if (Making=="Top Cover")
 {
-    // top shelf is just a modified shelf
+    // top cover is just a modified shelf
     // without side panels
     rotate([180,0,0]) // prefer printing orientation
     shelf(shelf_style="top cover");
 }
-else if (making=="short top cover")
+else if (Making=="Short Top Cover")
 {
     // just make a full cover and chop it in half :)
     rotate([180,0,0]) // prefer printing orientation
@@ -31,17 +27,24 @@ else if (making=="short top cover")
              panel_length/3,panel_thickness*4]);
     }
 }
-else if (making=="10inch1U")
+else if (Making=="10inch1U")
 {
     // Not completed yet
     shelf(shelf_style="10inch1U");
 } 
-else if (making=="test")
+else // if (Making=="test")
 {
-    // testing code
+    // testing code here
     // side_panel();
     cross_brace(40);
 }
+
+/* [Hidden] */
+panel_height=(Height=="40mm Slim") ? 40 :
+             (Height=="50mm Standard") ? 50 :
+             (Height=="150mm") ? 150 :
+             (Height=="180mm") ? 180 : 
+             (Height=="Custom") ? CustomHeight : 0;
 
 module cross_brace(height)
 {
@@ -316,7 +319,7 @@ module shelf(
         } //union
    
    // Below are code for rounding the exterior edges
-   
+        
    // Based on a dimension (215+2sidepanel)x(200+backpanel)x
    // panel_height+panel_thickness
    $fn=100;
