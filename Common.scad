@@ -3,7 +3,7 @@ panel_thickness = 5;
 // panel_height = 50; // regular
 // panel_height = 150; // extra tall, under tested
 // panel_height = 180;
-panel_height = 40; // slim, under tested
+panel_height = 40; // slim
 panel_length = 200;
 
 shelf_width=215;

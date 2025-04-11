@@ -2,22 +2,26 @@
 // built. The file also has utilities for the common tasks
 
 include <Common.scad>
-
 use <KeystoneMount.scad>
 
 /* [Making] */
-making="Vented"; // ["Solid","Vented","Drawer","8 Keystones","Other"]
+Making="Vented"; // ["Solid","Vented","Drawer","8 Keystones","Other"]
+Height="Standard"; // ["Standard","Slim","150","180"]
 // TODO: screw plate customizer
 
 /* [Hidden] */
 
-if (making=="Solid") {
+// panel_height=150;
+
+
+
+if (Making=="Solid") {
     quick_release_solid_plate();
-} else if (making=="Vented") {
+} else if (Making=="Vented") {
     quick_release_vented_plate();
-} else if (making=="Drawer") {
+} else if (Making=="Drawer") {
     drawer_plate();
-} else if (making=="8 Keystones") {
+} else if (Making=="8 Keystones") {
     8_keystone_plate();
 } else {
     // Use code here for screw plate
