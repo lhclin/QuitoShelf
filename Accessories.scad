@@ -2,18 +2,18 @@ include <Common.scad>
 use <threads.scad>
 
 /* [Making] */
-making="Plate Stoppers"; // ["Plate Stoppers","Side Clip Back","Side Clips Air Vent","Mounting Screw 25mm","Mounting Screw 40mm"]
+Making="Plate Stoppers"; // ["Plate Stoppers","Side Clip Back","Side Clips Air Vent","Mounting Screw 25mm","Mounting Screw 40mm"]
 
 /* [Hidden] */
-if (making=="Plate Stoppers") {
+if (Making=="Plate Stoppers") {
     4_stoppers();
-} else if (making=="Side Clip Back") {
+} else if (Making=="Side Clip Back") {
     side_clip_back(height=panel_height-2*panel_thickness-2);
-} else if (making=="Side Clips Air Vent") {
+} else if (Making=="Side Clips Air Vent") {
     4_side_clips();
-} else if (making=="Mounting Screw 25mm") {
+} else if (Making=="Mounting Screw 25mm") {
     universal_mount_screw(25);
-} else if (making=="Mounting Screw 40mm") {
+} else if (Making=="Mounting Screw 40mm") {
     universal_mount_screw(40);
 }
 
