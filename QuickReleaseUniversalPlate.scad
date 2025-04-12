@@ -7,11 +7,37 @@ use <QuickReleaseBasePlate.scad>
 use <threads.scad>
 
 /* [Making] */
-making="Side Screw"; // ["Side Screw","Back Screw","Others"]
-Equipment_Width=120; // [120,150,170];
+Making="Side Screw"; // ["Side Screw","Back Screw","Bracket"]
+Shelf_Height="40mm Slim"; // ["40mm Slim","50mm Standard","150mm","180mm","Custom"]
+// When Shelf Height is set to Custom
+Custom_Shelf_Height=40;
+
+Equipment_Width=120;
+// Bracket Plate Only
+Equipment_Depth=100;
+// Bracket Plate Only
+Equipment_Height=32;
+
+// Back Screw Plate Only - 0,1,2,3
+Back_Screw_Plate_Position=1;
+
 /* [Back Screw Parameters] */
 /* [Hidden] */
-bracket_plate(ew=172,ed=100,eh=32);
+// bracket_plate(ew=172,ed=100,eh=32);
+
+if (Making=="Side Screw") {
+    universal_side_screw_plate(equipment_width=Equipment_Width);
+} else if (Making=="Back Screw") {
+    universal_back_screw_plate(equipment_width=Equipment_Width,screw_plate_pos=Back_Screw_Plate_Position);
+} else if (Making=="Bracket") {
+    bracket_plate(ew=Equipment_Width,ed=Equipment_Depth,eh=Equipment_Height);
+}
+
+panel_height=(Shelf_Height=="40mm Slim") ? 40 :
+             (Shelf_Height=="50mm Standard") ? 50 :
+             (Shelf_Height=="150mm") ? 150 :
+             (Shelf_Height=="180mm") ? 180 : 
+             (Shelf_Height=="Custom") ? Custom_Shelf_Height : 0;
 
 // ----------------------------------------
 // Universl Mounting Plate with side screws
@@ -58,12 +84,16 @@ module universal_back_screw_plate(equipment_width=180,screw_plate_pos=0)
     front_cover(align="left",width=cover_width+10);
     front_cover(align="right",width=cover_width+10);
     
+    if (equipment_width <= 190)
+    {
+        // Side panels
     translate([cover_width,0,panel_thickness])
         mirror([1,0,0]) universal_back_screw_panel();
     
     translate([shelf_width-cover_width,0,panel_thickness])
         universal_back_screw_panel();
-        
+    }
+    
      // Add the screw back panel
      ty=(screw_plate_pos < 4) ?
          lookup(screw_plate_pos, [
@@ -75,64 +105,7 @@ module universal_back_screw_plate(equipment_width=180,screw_plate_pos=0)
         universal_back_panel();
 }
 
-// ----------------
-// Mini PC 1L Plate
-// ----------------
-// mini_pc_1L_plate is based on the popular 1L mini pc format
-// used by HP, Dell and Lenovo. It is designed to use M4x8 screws,
-// but M4x6 to M4x12 will work
-// older code, keystone at the left hand side
-module mini_pc_1L_plate_left_keystone()
-{
-    xoffset=panel_thickness; // account for the slider slot
-    yoffset=6.5; // measured front plate thickness of an HP G3 mini
-    
-    screw_plate(
-        40+xoffset,40+yoffset,4,
-        140+xoffset,40+yoffset,4,
-        140+xoffset,140+yoffset,4,
-        40+xoffset,140+yoffset,4);
-    
-    kw=30;
-    ksw=13.6;//hard coded
-    tkz=15;
-    tkx=shelf_width-kw+ksw/2;
-    difference()
-    {
-        front_cover(align="right",width=kw);
-        translate([tkx,0,tkz])
-            hull()keystone_mount();
-    }
-    translate([tkx,0,tkz])
-            keystone_mount();
-}
-
-module mini_pc_1L_plate()
-{
-    xstart=shelf_width-panel_thickness-140; // account for the slider slot
-    yoffset=6.5; // measured front plate thickness of an HP G3 mini
-    
-    screw_plate(
-        xstart,40+yoffset,4,
-        xstart+100,40+yoffset,4,
-        xstart+100,140+yoffset,4,
-        xstart,140+yoffset,4);
-    
-    kw=30;
-    ksw=16.6;//hard coded
-    tkz=15;
-    tkx=(kw-ksw)/2;
-    difference()
-    {
-        front_cover(align="left",width=kw);
-        translate([tkx,0,tkz])
-            hull()keystone_mount();
-    }
-    translate([tkx,0,tkz])
-            keystone_mount();
-}
-
-// -------------
+// ------------
 // Bracket Plate
 // -------------
 // Specify the equipement width, depth, and height
@@ -165,8 +138,14 @@ module bracket_plate(ew=0,ed=0,eh=0)
                  oversize=oversize);
     }
     // remove some print material for weight and air flow
+    chop_width=width_limit;
+    translate([(shelf_width-chop_width)/2+wt,ed+4*wt, 0])
+    cube([chop_width-2*wt,panel_length,eh]);
+    
+    /* old code for material removal
     translate([(shelf_width-bew)/2+wt,ed+4*wt, 0])
     cube([bew-2*wt,ed,eh]);
+    */
     } // difference
 }
 
