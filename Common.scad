@@ -2,6 +2,7 @@
 panel_thickness = 5;
 
 /* panel_height is now defined in individual customizer
+   and renamed to shelf_height
 // panel_height = 50; // regular
 // panel_height = 150; // extra tall, under tested
 // panel_height = 180;

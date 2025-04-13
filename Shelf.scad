@@ -3,12 +3,22 @@ include <Common.scad>
 /* [Making] */
 
 Making="Shelf"; // ["Shelf","Top Cover","Short Top Cover"]
+
 Height="40mm Slim"; // ["40mm Slim","50mm Standard","150mm","180mm","Custom"]
-CustomHeight=40;
+// When Height is set to Custom
+Custom_Height=40;
+
+/* [Hidden] */
+shelf_height=(Height=="40mm Slim") ? 40 :
+             (Height=="50mm Standard") ? 50 :
+             (Height=="150mm") ? 150 :
+             (Height=="180mm") ? 180 : 
+             (Height=="Custom") ? Custom_Height : 0;
 
 if (Making=="Shelf")
 {
-    shelf(shelf_style="regular");
+    shelf(shelf_style="regular",
+          panel_height=shelf_height);
 }
 else if (Making=="Top Cover")
 {
@@ -40,13 +50,6 @@ else // if (Making=="test")
     // side_panel();
     cross_brace(40);
 }
-
-/* [Hidden] */
-panel_height=(Height=="40mm Slim") ? 40 :
-             (Height=="50mm Standard") ? 50 :
-             (Height=="150mm") ? 150 :
-             (Height=="180mm") ? 180 : 
-             (Height=="Custom") ? CustomHeight : 0;
 
 module cross_brace(height)
 {
@@ -99,7 +102,7 @@ module locking_latch(t=0,mirror=false){
     }
 }
 
-module side_panel_plate()
+module side_panel_plate(panel_height=0)
 {
     difference()
     {
@@ -147,7 +150,8 @@ module side_panel_plate()
 }
 
 module side_panel(
-    shelf_style="regular" // regular,top cover,10inch1U
+    shelf_style="regular", // regular,top cover,10inch1U
+    panel_height=0
 )
 {    
     tolerance = 2; // this affects the rail only, original was 1, too tight
@@ -156,7 +160,7 @@ module side_panel(
     rotate([0,-90,0])    // transform to shelf orientation
     union(){
         // Plate
-        side_panel_plate();
+        side_panel_plate(panel_height=panel_height);
         if (shelf_style == "regular") // other style has no rail
         {
             // rail_z_offset = side == 1 ? -panel_thickness : panel_thickness;
@@ -182,6 +186,7 @@ module side_panel(
             translate([0, panel_length, rail_z_offset])
                 cube([panel_height, panel_thickness, panel_thickness]);
                 
+                /* obsolete
             // bracing for tall shelf. Starting
             // at 80mm, create a cross brace of 40mm tall
             // printing support is likely required
@@ -190,6 +195,7 @@ module side_panel(
             // if (panel_height >= brace_start+delta) 
             {
             }
+                */
         }       
     }
 }
@@ -234,7 +240,8 @@ module bottom_panel(
 } // bottom_panel
 
 module shelf_left(
-    shelf_style="regular" // regular,top cover,10inch1U
+    shelf_style="regular", // regular,top cover,10inch1U
+    panel_height=0
 )
 {
     difference() 
@@ -247,7 +254,9 @@ module shelf_left(
         union(){
             if(shelf_style!="top cover")
             {
-                side_panel(shelf_style=shelf_style); // left panel
+                side_panel(
+                    shelf_style=shelf_style,
+                    panel_height=panel_height); // left panel
             }
 
             // doing a full bottom panel, but only      
@@ -299,7 +308,8 @@ module shelf_left(
 // Main object: shelf
 // ------------------
 module shelf(
-    shelf_style="regular" // regular,top cover,10inch1U
+    shelf_style="regular", // regular,top cover,10inch1U
+    panel_height=0
 )
 {
    difference() 
@@ -308,8 +318,12 @@ module shelf(
            // left+right shelf re-oriented
            translate([shelf_width/2+panel_thickness, 0, 0]) 
            {
-               shelf_left(shelf_style=shelf_style);
-               mirror([1,0,0]) shelf_left(shelf_style=shelf_style);
+               shelf_left(
+                   shelf_style=shelf_style,
+                   panel_height=panel_height);
+               mirror([1,0,0]) shelf_left(
+                   shelf_style=shelf_style,
+                   panel_height=panel_height);
            }
            // add the cross brace if shelf is tall
            zstart=80;

@@ -6,8 +6,10 @@ use <KeystoneMount.scad>
 
 /* [Making] */
 Making="Vented"; // ["Vented","Drawer","Keystones","Solid Full","Solid Half","Solid Quarter","Screw"]
+// Used by Drawer and Keystones Only
 Height="40mm Slim"; // ["40mm Slim","50mm Standard","150mm","180mm","Custom"]
-CustomHeight=40;
+// When Height is set to Custom
+Custom_Height=40;
 Keystones=8;
 
 /* [Screw Plate Parameters] */
@@ -19,18 +21,20 @@ X4=157.5; Y4=146.5;
 Vented=0;
 
 /* [Hidden] */
-panel_height=(Height=="40mm Slim") ? 40 :
+shelf_height=(Height=="40mm Slim") ? 40 :
              (Height=="50mm Standard") ? 50 :
              (Height=="150mm") ? 150 :
              (Height=="180mm") ? 180 : 
-             (Height=="Custom") ? CustomHeight : 0; 
+             (Height=="Custom") ? Custom_Height : 0; 
 
 if (Making=="Vented") {
     quick_release_vented_plate();
 } else if (Making=="Drawer") {
-    drawer_plate();
+    drawer_plate(panel_height=shelf_height);
 } else if (Making=="Keystones") {
-    keystone_plate(Keystones);
+    keystone_plate(
+        keystones=Keystones,
+        panel_height=shelf_height);
 } else if (Making=="Solid Full") {
     quick_release_solid_plate(plate_style="full");
 } else if (Making=="Solid Half") {
@@ -164,12 +168,12 @@ module screw_plate(
 // ------------
 // Drawer Plate makes a drawer. It and its utilities serves as a foundation for
 // plates with side and back panels
-module drawer_plate()
+module drawer_plate(panel_height=0)
 {   
     quick_release_solid_plate(screw_holes=false,hint_text=false);
     difference() 
     {
-        front_cover();
+        front_cover(panel_height=panel_height);
         translate([shelf_width/2,0,panel_height*2/3])
         rotate([90,0,0])
         venting_hole(shelf_width/6, panel_height/8,center=true); // drawer handle
@@ -184,13 +188,13 @@ module drawer_plate()
           panel_height-panel_thickness-4]);
     
     translate([0,panel_length,panel_thickness])
-        back_cover();
+        back_cover(panel_height=panel_height);
 }
 
 // ---------------------
 // Keystone Mount Plates
 // ---------------------
-module keystone_plate(keystones=8)
+module keystone_plate(keystones=8,panel_height=0)
 {
     stones=keystones < 1 ? 1 : keystones; // don't div by 0
     
@@ -204,7 +208,7 @@ module keystone_plate(keystones=8)
     ks_space=(shelf_width-2*margin)/stones;
     
     difference() {
-        front_cover();
+        front_cover(panel_height=panel_height);
         for (i=[0:stones-1]) {
             ksx=i*ks_space+margin+(ks_space-ksw)/2;
             
@@ -283,7 +287,8 @@ module screw_plate_hole(
 
 module front_cover(
     align="center",
-    width=0 // full width
+    width=0, // full width
+    panel_height=0
 )
 {
     w = width > 0 ? width : shelf_width;
@@ -296,7 +301,7 @@ module front_cover(
              cube([w,panel_thickness,panel_height-2]);
 }
 
-module back_cover()
+module back_cover(panel_height=0)
 {
      translate([5,-5,0])
      cube([shelf_width-10,panel_thickness,

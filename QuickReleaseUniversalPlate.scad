@@ -8,10 +8,11 @@ use <threads.scad>
 
 /* [Making] */
 Making="Side Screw"; // ["Side Screw","Back Screw","Bracket"]
+
 Shelf_Height="40mm Slim"; // ["40mm Slim","50mm Standard","150mm","180mm","Custom"]
 // When Shelf Height is set to Custom
 Custom_Shelf_Height=40;
-
+             
 Equipment_Width=120;
 // Bracket Plate Only
 Equipment_Depth=100;
@@ -23,49 +24,61 @@ Back_Screw_Plate_Position=1;
 
 /* [Back Screw Parameters] */
 /* [Hidden] */
-// bracket_plate(ew=172,ed=100,eh=32);
 
-if (Making=="Side Screw") {
-    universal_side_screw_plate(equipment_width=Equipment_Width);
-} else if (Making=="Back Screw") {
-    universal_back_screw_plate(equipment_width=Equipment_Width,screw_plate_pos=Back_Screw_Plate_Position);
-} else if (Making=="Bracket") {
-    bracket_plate(ew=Equipment_Width,ed=Equipment_Depth,eh=Equipment_Height);
-}
-
-panel_height=(Shelf_Height=="40mm Slim") ? 40 :
+shelf_height=(Shelf_Height=="40mm Slim") ? 40 :
              (Shelf_Height=="50mm Standard") ? 50 :
              (Shelf_Height=="150mm") ? 150 :
              (Shelf_Height=="180mm") ? 180 : 
              (Shelf_Height=="Custom") ? Custom_Shelf_Height : 0;
+             
+if (Making=="Side Screw") {
+    universal_side_screw_plate(
+        equipment_width=Equipment_Width,
+        panel_height=shelf_height);
+} else if (Making=="Back Screw") {
+    universal_back_screw_plate(
+        equipment_width=Equipment_Width,
+        screw_plate_pos=Back_Screw_Plate_Position,
+        panel_height=shelf_height);
+} else if (Making=="Bracket") {
+    bracket_plate(
+        ew=Equipment_Width,
+        ed=Equipment_Depth,
+        eh=Equipment_Height);
+}
+
+// Testing
+// bracket_plate(ew=172,ed=100,eh=32);
 
 // ----------------------------------------
 // Universl Mounting Plate with side screws
 // ----------------------------------------
-module universal_side_screw_plate(equipment_width=120)
+module universal_side_screw_plate(
+    equipment_width=120,panel_height=0)
 {
-    // designed for several width sizes: 120,150,170. Should work up to 170mm
+    // designed for several width sizes: 120,145,170. Should work up to 170mm
     quick_release_vented_plate();
     
     width_tolerance=1;
     cover_width=(shelf_width-equipment_width) / 2 - width_tolerance;
     
-    front_cover(align="left",width=cover_width);
-    front_cover(align="right",width=cover_width);
+    front_cover(align="left",width=cover_width,panel_height=panel_height);
+    front_cover(align="right",width=cover_width,
+    panel_height=panel_height);
     
     translate([cover_width,0,panel_thickness])
         // Important: we can't mirror side panel to create another here
         // because it has screw threads, which can't be mirrored
-        universal_side_screw_panel(psuedo_mirror=true);
+        universal_side_screw_panel(psuedo_mirror=true,panel_height=panel_height);
     
     translate([shelf_width-cover_width,0,panel_thickness])
-        universal_side_screw_panel();
+        universal_side_screw_panel(panel_height=panel_height);
 }
 
 // -----------------------------------------
 // Universal Mounting Plate with back screws
 // -----------------------------------------
-module universal_back_screw_plate(equipment_width=180,screw_plate_pos=0)
+module universal_back_screw_plate(equipment_width=180,screw_plate_pos=0,panel_height=0)
 {
     // designed for equipment wider than 170mm. The mounting screws
     // are at the back, which is not ideal as many connectors are
@@ -81,17 +94,17 @@ module universal_back_screw_plate(equipment_width=180,screw_plate_pos=0)
     width_tolerance=1;
     cover_width=(shelf_width-equipment_width) / 2 - width_tolerance;
     
-    front_cover(align="left",width=cover_width+10);
-    front_cover(align="right",width=cover_width+10);
+    front_cover(align="left",width=cover_width+10,panel_height=panel_height);
+    front_cover(align="right",width=cover_width+10,panel_height=panel_height);
     
     if (equipment_width <= 190)
     {
-        // Side panels
+        // Despite the name, these are actually side panels
     translate([cover_width,0,panel_thickness])
-        mirror([1,0,0]) universal_back_screw_panel();
+        mirror([1,0,0]) universal_back_screw_side_panel(panel_height=panel_height);
     
     translate([shelf_width-cover_width,0,panel_thickness])
-        universal_back_screw_panel();
+        universal_back_screw_side_panel(panel_height=panel_height);
     }
     
      // Add the screw back panel
@@ -102,7 +115,7 @@ module universal_back_screw_plate(equipment_width=180,screw_plate_pos=0)
              [2,140],
              [3,185]]) : 120;
      translate([0,ty,panel_thickness])
-        universal_back_panel();
+        universal_back_panel(panel_height=panel_height);
 }
 
 // ------------
@@ -156,7 +169,8 @@ module bracket_plate(ew=0,ed=0,eh=0)
 // side panel for Universal Side Screw Mount
 module universal_side_screw_panel(
     psuedo_mirror=false,
-    make_screw=true)
+    make_screw=true,
+    panel_height=0)
 {
      ydist=panel_length/4;
      zdist=(panel_height-12)/2;
@@ -171,7 +185,7 @@ module universal_side_screw_panel(
      translate([px,0,0]) union(){
      difference()
      {
-         // from drawer code, may be later combine the two
+         // taken from drawer code, may be later combine the two
          cube([panel_thickness,panel_length,
                panel_height-panel_thickness-4]);
 
@@ -197,17 +211,17 @@ module universal_side_screw_panel(
 }
 
 // side panel for Universal Back Screw Mount
-module universal_back_screw_panel()
+module universal_back_screw_side_panel(panel_height=0)
 {
-     // the panel for universal back screw is a modified
-     // version of universal side screw panel. Back screw version
+     // the side panel for universal back screw is a modified
+     // version of side screw side panel. Back screw version
      // is shorter, no screw thread, no pseudo mirror code
      // and air vented
     
      difference() 
      {
          intersection() {
-             universal_side_screw_panel(make_screw=false);
+             universal_side_screw_panel(make_screw=false,panel_height=panel_height);
              cube([panel_thickness,100,panel_height]); // cut short
          }
          translate([0,15,(panel_height-10)/2])
@@ -217,7 +231,7 @@ module universal_back_screw_panel()
 }
 
 // Back panel for Universal Mount with back screws
-module universal_back_panel()
+module universal_back_panel(panel_height=0)
 {
     nut_thickness=8;
     
@@ -229,7 +243,7 @@ module universal_back_panel()
     vxdist=xdist;
     
     difference() {
-            back_cover();
+            back_cover(panel_height=panel_height);
     
             for(i=[1:3]) {
                 translate([panel_thickness+i*xdist,ny,zdist])
@@ -340,9 +354,7 @@ module equipment_bracket(
     translate([shelf_width,0,-panel_thickness]) // move it out of way
     equipment_bracket_cover(w=w,d=d,h=h);
     
-    translate([shelf_width+4*wt,0,-panel_thickness]) // move it out of way
+    translate([shelf_width-w+wt*4,0,-panel_thickness]) // move it out of way
+    mirror([1,0,0])
     equipment_bracket_cover(w=w,d=d,h=h);
 }
-
-// Testing
-//universal_back_panel();
