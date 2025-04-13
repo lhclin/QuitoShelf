@@ -6,6 +6,7 @@ use <KeystoneMount.scad>
 
 /* [Making] */
 Making="Vented"; // ["Vented","Drawer","Keystones","Solid Full","Solid Half","Solid Quarter","Screw"]
+Plate_Text="BACK";
 // Used by Drawer and Keystones Only
 Height="40mm Slim"; // ["40mm Slim","50mm Standard","150mm","180mm","Custom"]
 // When Height is set to Custom
@@ -28,7 +29,7 @@ shelf_height=(Height=="40mm Slim") ? 40 :
              (Height=="Custom") ? Custom_Height : 0; 
 
 if (Making=="Vented") {
-    quick_release_vented_plate();
+    quick_release_vented_plate(plate_text=Plate_Text);
 } else if (Making=="Drawer") {
     drawer_plate(panel_height=shelf_height);
 } else if (Making=="Keystones") {
@@ -36,18 +37,21 @@ if (Making=="Vented") {
         keystones=Keystones,
         panel_height=shelf_height);
 } else if (Making=="Solid Full") {
-    quick_release_solid_plate(plate_style="full");
+    quick_release_solid_plate(plate_style="full",plate_text=Plate_Text);
 } else if (Making=="Solid Half") {
-    quick_release_solid_plate(plate_style="half");
+    quick_release_solid_plate(plate_style="half",
+    plate_text=Plate_Text);
 } else if (Making=="Solid Quarter") {
-    quick_release_solid_plate(plate_style="quarter");
+    quick_release_solid_plate(plate_style="quarter",
+    plate_text=Plate_Text);
 } else if (Making=="Screw") {
     screw_plate(
         sx1=X1,sy1=Y1,sd1=Diameter,
         sx2=X2,sy2=Y2,sd2=Diameter,
         sx3=X3,sy3=Y3,sd3=Diameter,
         sx4=X4,sy4=Y4,sd4=Diameter,
-        vented=Vented);
+        vented=Vented,
+        plate_text=Plate_Text);
 }
 
 // -----------
