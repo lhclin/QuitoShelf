@@ -53,10 +53,11 @@ if (Making=="Side Screw") {
 // Universl Mounting Plate with side screws
 // ----------------------------------------
 module universal_side_screw_plate(
-    equipment_width=120,panel_height=0)
+    equipment_width=120,panel_height=0,
+    plate_text="BACK")
 {
     // designed for several width sizes: 120,145,170. Should work up to 170mm
-    quick_release_vented_plate();
+    quick_release_vented_plate(plate_text=plate_text);
     
     width_tolerance=1;
     cover_width=(shelf_width-equipment_width) / 2 - width_tolerance;
@@ -77,7 +78,7 @@ module universal_side_screw_plate(
 // -----------------------------------------
 // Universal Mounting Plate with back screws
 // -----------------------------------------
-module universal_back_screw_plate(equipment_width=180,screw_plate_pos=0,panel_height=0)
+module universal_back_screw_plate(equipment_width=180,screw_plate_pos=0,panel_height=0,plate_text="BACK")
 {
     // designed for equipment wider than 170mm. The mounting screws
     // are at the back, which is not ideal as many connectors are
@@ -88,7 +89,7 @@ module universal_back_screw_plate(equipment_width=180,screw_plate_pos=0,panel_he
     // 0 is closest to the front. 3 is furthest away
     
     // A 10mm latch cover is provided to hold the equipment in place
-    quick_release_vented_plate();
+    quick_release_vented_plate(plate_text=plate_text);
     
     width_tolerance=1;
     cover_width=(shelf_width-equipment_width) / 2 - width_tolerance;
@@ -126,7 +127,7 @@ module universal_back_screw_plate(equipment_width=180,screw_plate_pos=0,panel_he
 //
 // Use this type of plate when the universal screw
 // plates are not desirable
-module bracket_plate(ew=0,ed=0,eh=0)
+module bracket_plate(ew=0,ed=0,eh=0,plate_text="BACK")
 {
     wt=10;
     hwt=wt/2;
@@ -144,7 +145,9 @@ module bracket_plate(ew=0,ed=0,eh=0)
     
     difference() {
     union(){
-        quick_release_solid_plate();
+        quick_release_solid_plate(
+            plate_text=plate_text,
+            hint_text_pos=ed+20);
         translate([shelf_width/2,ed/2+wt,panel_thickness])
             equipment_bracket(w=bew,d=ed,h=eh,
                  oversize=oversize);

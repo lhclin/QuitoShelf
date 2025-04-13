@@ -44,7 +44,8 @@ if (Making=="HP Elitedesk Mini") {
 // used by HP, Dell and Lenovo. Plate is designed to use M4x8 screws,
 // but M4x6 to M4x12 will work
 // right_keystone is older code, keystone at the right hand side
-module mini_pc_1L_plate_right_keystone()
+module mini_pc_1L_plate_right_keystone(
+    plate_text="MINI PC 1L")
 {
     xoffset=panel_thickness; // account for the slider slot
     yoffset=6.5; // measured front plate thickness of an HP G3 mini
@@ -53,7 +54,8 @@ module mini_pc_1L_plate_right_keystone()
         40+xoffset,40+yoffset,4,
         140+xoffset,40+yoffset,4,
         140+xoffset,140+yoffset,4,
-        40+xoffset,140+yoffset,4);
+        40+xoffset,140+yoffset,4,
+        plate_text=plate_text);
     
     kw=30;
     ksw=13.6;//hard coded
@@ -69,7 +71,8 @@ module mini_pc_1L_plate_right_keystone()
             keystone_mount();
 }
 
-module mini_pc_1L_plate() // currently keystone is on left hand side
+module mini_pc_1L_plate(
+    plate_text="MINI PC 1L") // default keystone is on left hand side
 {
     xstart=shelf_width-panel_thickness-140; // account for the slider slot
     yoffset=6.5; // measured front plate thickness of an HP G3 mini
@@ -78,7 +81,8 @@ module mini_pc_1L_plate() // currently keystone is on left hand side
         xstart,40+yoffset,4,
         xstart+100,40+yoffset,4,
         xstart+100,140+yoffset,4,
-        xstart,140+yoffset,4);
+        xstart,140+yoffset,4,
+        plate_text=plate_text);
     
     kw=30;
     ksw=16.6;//hard coded
@@ -100,7 +104,7 @@ module mini_pc_1L_plate() // currently keystone is on left hand side
 module hp_elitedesk_mini_plate()
 {
     // tested with elitedesk G2 and G3
-    mini_pc_1L_plate();
+    mini_pc_1L_plate("HP ELITEDESK MINI");
 }
 
 // -----------------------------
@@ -109,7 +113,7 @@ module hp_elitedesk_mini_plate()
 module yulinca_8port_plate()
 {
     universal_back_screw_plate(
-        equipment_width=190,screw_plate_pos=2,panel_height=40);
+        equipment_width=190,screw_plate_pos=2,panel_height=40, plate_text="YuLinca 8 Port");
 }
 
 // --------------------------------
@@ -121,7 +125,8 @@ module tplink_TLSG1008D_plate()
     ed=110;
     eh=30;
     
-    bracket_plate(ew=ew,ed=ed,eh=eh);
+    bracket_plate(ew=ew,ed=ed,eh=eh,
+        plate_text="TP-Link TLSG1008D");
 }
 
 // ----------------------------
@@ -133,7 +138,8 @@ module Netgear_GS208_plate()
     ed=92;
     eh=26;
     
-    bracket_plate(ew=ew,ed=ed,eh=eh);
+    bracket_plate(ew=ew,ed=ed,eh=eh,
+        plate_text="Netgear GS208");
 }
 
 
@@ -170,11 +176,3 @@ module generic_100mm_wallmount_plate()
         universal_back_panel();
 }
 
-// Testing
-// yulinca_8port_plate();
-// hp_elitedesk_mini_plate();
-// network_switch_plate();
-// hdmi_switch_plate();
-// mini_pc_1L_plate();
-// 8_keystone_plate();
-// tplink_TLSG1008D_plate();

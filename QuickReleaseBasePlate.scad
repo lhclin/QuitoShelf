@@ -56,7 +56,9 @@ if (Making=="Vented") {
 // Solid plate contains all the required features
 module quick_release_solid_plate(
     screw_holes=true,hint_text=true,
-    plate_style="full" // full, half, quarter depth
+    plate_style="full", // full, half, quarter depth
+    plate_text="BACK",
+    hint_text_pos=-1
     ) 
 {
     difference(){
@@ -90,11 +92,13 @@ module quick_release_solid_plate(
     cube([shelf_width, 2, 2], center=true);    
         
     if (hint_text) {
-        // Mark the back of the quick release plate. Linux probably
-        // needs to install true type fonts
-        translate([shelf_width/2, panel_length-15,panel_thickness-0.4])
+        // Hint text: 
+        // Linux may need to install true type fonts
+        // TODO: Hint text for half and quarter plates
+        tp=(hint_text_pos==-1) ? panel_length-15 : hint_text_pos; 
+        translate([shelf_width/2, tp,panel_thickness-0.4])
         linear_extrude(2)
-        text("BACK",font="Arial",size=10,halign="center");
+        text(plate_text,font="Arial",size=10,halign="center");
     }
 
 }// difference
@@ -104,11 +108,11 @@ module quick_release_solid_plate(
 // Vented Plate
 // ------------
 // Vented solid plate with up to 3 big vent holes
-module quick_release_vented_plate(vented=3)
+module quick_release_vented_plate(vented=3,plate_text="BACK")
 {
     difference(){
         // Base plate
-        quick_release_solid_plate();
+        quick_release_solid_plate(plate_text=plate_text);
     
         // removing material for air vents
         base_plate_air_vents(vented=vented);
@@ -137,7 +141,8 @@ module screw_plate(
     sx4=0,sy4=0,sd4=0,
     plate_style="full",
     screw_style="real", // real, printed
-    vented=0
+    vented=0,
+    plate_text="BACK"
 )
 {
     // real screw are for, real screws to be screwed into the plate after printing
@@ -147,9 +152,9 @@ module screw_plate(
     difference()
     {
         if (vented > 0) {
-            quick_release_vented_plate(vented=vented);
+            quick_release_vented_plate(vented=vented,plate_text=plate_text);
         } else {
-            quick_release_solid_plate(plate_style=plate_style);
+            quick_release_solid_plate(plate_style=plate_style,plate_text=plate_text);
         }
         screw_plate_hole(sx=sx1,sy=sy1,sd=sd1,riseronly=true,screw_style=screw_style);
         screw_plate_hole(sx=sx2,sy=sy2,sd=sd2,riseronly=true,screw_style=screw_style);
