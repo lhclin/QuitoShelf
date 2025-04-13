@@ -22,7 +22,6 @@ Equipment_Height=32;
 // Back Screw Plate Only - 0,1,2,3
 Back_Screw_Plate_Position=1;
 
-/* [Back Screw Parameters] */
 /* [Hidden] */
 
 shelf_height=(Shelf_Height=="40mm Slim") ? 40 :

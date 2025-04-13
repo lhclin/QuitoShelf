@@ -7,6 +7,8 @@ Making="Shelf"; // ["Shelf","Top Cover","Short Top Cover"]
 Height="40mm Slim"; // ["40mm Slim","50mm Standard","150mm","180mm","Custom"]
 // When Height is set to Custom
 Custom_Height=40;
+// Create Brace for tall shelves
+Cross_Brace=true;
 
 /* [Hidden] */
 shelf_height=(Height=="40mm Slim") ? 40 :
@@ -53,6 +55,8 @@ else // if (Making=="test")
 
 module cross_brace(height)
 {
+    if (Cross_Brace)
+    {
     $fn=100;
     translate([0,panel_thickness/2,0]){
     hull() {
@@ -72,6 +76,7 @@ module cross_brace(height)
             cylinder(h=panel_thickness,d=panel_thickness,center=true);
     }
     }
+} // if Cross_Brace
 }
 
 module locking_latch(t=0,mirror=false){
