@@ -1,7 +1,7 @@
 # QuitoShelf
 Light duty 3D printable shelves for electronics and computers
 
-![QuitoShelf](images/IMG_2179.JPG | width=200)
+![QuitoShelf](images/IMG_2179.JPG width=200)
 
 Instructions
 ------------
