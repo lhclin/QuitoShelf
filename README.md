@@ -18,7 +18,7 @@ side-by-side using the Side Clip Accessories.
 2. 3D Print the shelf, plate, accessories
 3. Mount the equipment in the plate. You may need mounting screws (Accessories or M4).
 4. Slide the plate into the shelf
-[![](https://youtu.be/uXX8Isc5tDA)] 
+![](https://youtu.be/uXX8Isc5tDA)
 5. (Optional) Secure the plate to the shelf using Plate Stoppers (Accessories or M3).
 
 Makefile
