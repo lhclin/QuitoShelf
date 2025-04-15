@@ -7,7 +7,7 @@ Instructions
 ------------
 You need to install OpenSCAD (openscad.org).
 
-1.In OpenSCAD, you need to create: a shelf (create using Shelf.scad),
+1. In OpenSCAD, you need to create: a shelf (create using Shelf.scad),
 a plate (create using QuickRelease*Plate.scad) and
 some optional accessories (create using Accessories.scad).
 
@@ -18,10 +18,10 @@ side-by-side using the Side Clip Accessories.
 2. 3D Print the shelf, plate, accessories
 3. Mount the equipment in the plate. You may need mounting screws (Accessories or M4).
 4. Slide the plate into the shelf
-5. 
+5. (Optional) Secure the plate to the shelf using Plate Stoppers (Accessories or M3).
+
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=uXX8Isc5tDA" target="_blank"><img src="http://img.youtube.com/vi/uXX8Isc5tDA/0.jpg" 
 alt="Mounting Equipment" width="240" height="180" border="10" /></a>
-6. (Optional) Secure the plate to the shelf using Plate Stoppers (Accessories or M3).
 
 Makefile
 --------
